@@ -36,12 +36,24 @@ public class BookingController : Controller
     public IActionResult FinalizeBooking(int villaId, DateOnly CheckInDate, int nights)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity;
-        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-        ApplicationUser user = _unitOfWork.User.Get(u => u.Id == userId);
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+        
+        ApplicationUser? user = _unitOfWork.User.Get(u => u.Id == userId);
+        Villa? villa = _unitOfWork.Villa.Get(u => u.Id == villaId, includeProperties: "VillaAmenity");
+        
+        if (user == null || villa == null)
+        {
+            return NotFound();
+        }
+        
         Booking booking = new()
         {
             VillaId = villaId,
-            Villa = _unitOfWork.Villa.Get(u => u.Id == villaId, includeProperties: "VillaAmenity"),
+            Villa = villa,
             CheckInDate = CheckInDate,
             Nights = nights,
             CheckOutDate = CheckInDate.AddDays(nights),
@@ -49,6 +61,8 @@ public class BookingController : Controller
             Phone = user.PhoneNumber,
             Email = user.Email,
             Name = user.Name,
+            User = user,
+            VillaNumbers = new List<VillaNumber>()
         };
         booking.TotalCost = booking.Villa.Price * nights;
         return View(booking);
@@ -59,7 +73,12 @@ public class BookingController : Controller
     [HttpPost]
     public IActionResult FinalizeBooking(Booking booking)
     {
-        var villa = _unitOfWork.Villa.Get(u => u.Id == booking.VillaId);
+        Villa? villa = _unitOfWork.Villa.Get(u => u.Id == booking.VillaId);
+        if (villa == null)
+        {
+            return NotFound();
+        }
+        
         booking.TotalCost = villa.Price * booking.Nights;
         booking.Status = SD.StatusPending;
         booking.BookingDate = DateTime.Now;
@@ -109,16 +128,21 @@ public class BookingController : Controller
         var service = new Stripe.Checkout.SessionService();
         Stripe.Checkout.Session session = service.Create(options);
 
-        _unitOfWork.Booking.UpdateStripePaymentId(booking.Id ,session.Id ,session.PaymentIntentId);  
+        _unitOfWork.Booking.UpdateStripePaymentId(booking.Id, session.Id, session.PaymentIntentId);  
         _unitOfWork.Save(); 
-        Response.Headers.Add("Location", session.Url);
+        Response.Headers["Location"] = session.Url;
         return new StatusCodeResult(303);
     }
 
     [Authorize]
     public IActionResult BookingConfirmation(int bookingId)
     {
-        Booking bookingFormDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+        Booking? bookingFormDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+        if (bookingFormDb == null)
+        {
+            return NotFound();
+        }
+        
         if(bookingFormDb.Status == SD.StatusPending)
         {
             // this is pending order , we need to confirm the payment was successful
@@ -137,7 +161,11 @@ public class BookingController : Controller
     [Authorize]
     public IActionResult BookingDetails(int bookingId)
     {
-        Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+        Booking? bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+        if (bookingFromDb == null)
+        {
+            return NotFound();
+        }
 
         if(bookingFromDb.VillaNumber == 0 && bookingFromDb.Status == SD.StatusApproved)
         {
@@ -197,14 +225,19 @@ public class BookingController : Controller
         document.Open(fileStream, FormatType.Docx);
 
         // Update template
-        Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "User,Villa");
+        Booking? bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "User,Villa");
+        if (bookingFromDb == null)
+        {
+            return NotFound();
+        }
+        
         TextSelection textSelection = document.Find("xx_customer_name", false, true);
         WTextRange textRange = textSelection.GetAsOneRange();
         textRange.Text = bookingFromDb.Name;
 
         textSelection = document.Find("xx_customer_phone", false, true);
         textRange = textSelection.GetAsOneRange();
-        textRange.Text = bookingFromDb.Phone;
+        textRange.Text = bookingFromDb.Phone ?? string.Empty;
 
         textSelection = document.Find("xx_customer_email", false, true);
         textRange = textSelection.GetAsOneRange();

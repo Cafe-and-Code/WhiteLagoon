@@ -26,14 +26,15 @@ namespace WhiteLagoon.Web.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Login(string returnUrl=null)
+        public IActionResult Login(string? returnUrl=null)
         {
-
             returnUrl??= Url.Content("~/");
 
             LoginVM loginVM = new ()
             {
-                RedirectUrl = returnUrl
+                RedirectUrl = returnUrl,
+                Email = "",
+                Password = ""
             };
 
             return View(loginVM);
@@ -50,7 +51,7 @@ namespace WhiteLagoon.Web.Controllers
             return View();
         }
 
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult())
@@ -66,7 +67,11 @@ namespace WhiteLagoon.Web.Controllers
                     Text = x.Name,
                     Value = x.Name
                 }),
-                RedirectUrl = returnUrl 
+                RedirectUrl = returnUrl,
+                Email = "",
+                Password = "",
+                ConfirmPassword = "",
+                Name = ""
             };
 
             return View(registerVM);
@@ -138,7 +143,7 @@ namespace WhiteLagoon.Web.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(loginVM.Email);
-                    if (await _userManager.IsInRoleAsync(user, SD.Role_Admin))
+                    if (user != null && await _userManager.IsInRoleAsync(user, SD.Role_Admin))
                     {
                         return RedirectToAction("Index", "Dashboard");
                     }

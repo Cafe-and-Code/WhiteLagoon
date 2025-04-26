@@ -9,19 +9,19 @@ public class Booking
     public int Id { get; set; }
 
     [Required]
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     [ForeignKey("UserId")]
-    public ApplicationUser User { get; set; }
+    public required ApplicationUser User { get; set; }
 
     [Required]
     public int VillaId { get; set; }
     [ForeignKey("VillaId")]
-    public Villa Villa { get; set; }
+    public required Villa Villa { get; set; }
     
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     [Required]
-    public string Email { get; set; }
+    public required string Email { get; set; }
     public string? Phone { get; set; }
 
     [Required]
@@ -47,6 +47,5 @@ public class Booking
 
     public int VillaNumber { get; set; }
     [NotMapped]
-    public List<VillaNumber> VillaNumbers { get; set; }
-
+    public required List<VillaNumber> VillaNumbers { get; set; }
 }

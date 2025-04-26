@@ -25,7 +25,7 @@ public class Villa
     public DateTime? CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
     [ValidateNever]
-    public IEnumerable<Amenity> VillaAmenity { get; set; }
+    public required IEnumerable<Amenity> VillaAmenity { get; set; }
     [NotMapped]
     public bool IsAvailable { get; set; } = true;
 }

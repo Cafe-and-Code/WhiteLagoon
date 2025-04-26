@@ -20,7 +20,7 @@ namespace WhiteLagoon.Application.Services.Implementation
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<PieChartDto> GetBookingPieChartData()
+        public Task<PieChartDto> GetBookingPieChartData()
         {
             var totalBookings = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30) &&
            (u.Status != SD.StatusPending || u.Status == SD.StatusCancelled));
@@ -36,10 +36,10 @@ namespace WhiteLagoon.Application.Services.Implementation
                 Series = new decimal[] { bookingsByNewCustomer, bookingsByReturningCustomer }
             };
 
-            return PieChartDto;
+            return Task.FromResult(PieChartDto);
         }
 
-        public async Task<LineChartDto> GetMemberAndBookingLineChartData()
+        public Task<LineChartDto> GetMemberAndBookingLineChartData()
         {
             var bookingData = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30) &&
              u.BookingDate.Date <= DateTime.Now)
@@ -101,10 +101,10 @@ namespace WhiteLagoon.Application.Services.Implementation
                 Series = chartDataList
             };
 
-            return LineChartDto;
+            return Task.FromResult(LineChartDto);
         }
 
-        public async Task<RadialBarChartDto> GetRegisteredUserChartData()
+        public Task<RadialBarChartDto> GetRegisteredUserChartData()
         {
 
             var totalUsers = _unitOfWork.User.GetAll();
@@ -116,10 +116,10 @@ namespace WhiteLagoon.Application.Services.Implementation
             u.CreateAt <= currentMonthStartDate);
 
 
-            return SD.GetRadialCartDataModel(totalUsers.Count(), countByCurrentMonth, countByPreviousMonth);
+            return Task.FromResult(SD.GetRadialCartDataModel(totalUsers.Count(), countByCurrentMonth, countByPreviousMonth));
         }
 
-        public async Task<RadialBarChartDto> GetRevenueChartData()
+        public Task<RadialBarChartDto> GetRevenueChartData()
         {
             var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status != SD.StatusPending
           || u.Status == SD.StatusCancelled);
@@ -132,10 +132,10 @@ namespace WhiteLagoon.Application.Services.Implementation
             var countByPreviousMonth = totalBookings.Where(u => u.BookingDate >= previousMonthStartDate &&
             u.BookingDate <= currentMonthStartDate).Sum(u => u.TotalCost);
 
-            return SD.GetRadialCartDataModel(totalRevenue, countByCurrentMonth, countByPreviousMonth);
+            return Task.FromResult(SD.GetRadialCartDataModel(totalRevenue, countByCurrentMonth, countByPreviousMonth));
         }
 
-        public async Task<RadialBarChartDto> GetTotalBookingRadialChartData()
+        public Task<RadialBarChartDto> GetTotalBookingRadialChartData()
         {
             var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status != SD.StatusPending
           || u.Status == SD.StatusCancelled);
@@ -146,7 +146,7 @@ namespace WhiteLagoon.Application.Services.Implementation
             var countByPreviousMonth = totalBookings.Count(u => u.BookingDate >= previousMonthStartDate &&
             u.BookingDate <= currentMonthStartDate);
 
-            return SD.GetRadialCartDataModel(totalBookings.Count(), countByCurrentMonth, countByPreviousMonth);
+            return Task.FromResult(SD.GetRadialCartDataModel(totalBookings.Count(), countByCurrentMonth, countByPreviousMonth));
         }
     }
 }

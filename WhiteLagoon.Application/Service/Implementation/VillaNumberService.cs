@@ -54,7 +54,7 @@ namespace WhiteLagoon.Application.Services.Implementation
             return _unitOfWork.VillaNumber.GetAll(includeProperties: "Villa");
         }
 
-        public VillaNumber GetVillaNumberById(int id)
+        public VillaNumber? GetVillaNumberById(int id)
         {
             return _unitOfWork.VillaNumber.Get(u => u.Villa_Number == id, includeProperties: "Villa");
         }

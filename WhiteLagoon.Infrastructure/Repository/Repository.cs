@@ -26,7 +26,7 @@ public class Repository<T> : IRepository<T> where T : class
         return dbSet.Any(filter);
     }
 
-    public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
+    public T? Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
     {
         IQueryable<T> query = dbSet;
         

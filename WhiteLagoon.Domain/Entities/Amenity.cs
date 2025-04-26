@@ -14,5 +14,5 @@ public class Amenity
     [ForeignKey("Villa")]
     public int VillaId { get; set; }
     [ValidateNever]
-    public Villa Villa { get; set; }
+    public required Villa Villa { get; set; }
 }

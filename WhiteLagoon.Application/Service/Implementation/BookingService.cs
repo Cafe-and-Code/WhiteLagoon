@@ -46,7 +46,7 @@ namespace WhiteLagoon.Application.Services.Implementation
             return _unitOfWork.Booking.GetAll(includeProperties: "User, Villa");
         }
 
-        public Booking GetBookingById(int bookingId)
+        public Booking? GetBookingById(int bookingId)
         {
             return _unitOfWork.Booking.Get(u=>u.Id==bookingId,includeProperties: "User, Villa");
         }

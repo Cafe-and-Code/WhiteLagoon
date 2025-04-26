@@ -51,12 +51,16 @@ namespace WhiteLagoon.Infrastructure.Data
                         PhoneNumber = "1112223333",
                     }, "Admin123*").GetAwaiter().GetResult();
 
-                    ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@dotnetmastery.com");
-                    _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
+                    ApplicationUser? user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@dotnetmastery.com");
+                    if (user != null)
+                    {
+                        _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
+                    }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error during database initialization: {ex.Message}");
                 throw;
             }
         }
