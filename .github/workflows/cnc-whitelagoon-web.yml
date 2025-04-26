@@ -1,0 +1,90 @@
+name: Whitelagoon Web CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: CNC-Testing
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Apply appsettings
+      run: |
+        Copy-Item -Path "C:/secret_config/WhiteLagoon.Web/appsettings.json" -Destination "./WhiteLagoon.Web/appsettings.json"
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: |
+        cd WhiteLagoon.Web
+        dotnet restore
+    - name: Build
+      run: |
+        cd WhiteLagoon.Web
+        dotnet build --configuration Release
+        dotnet publish -c release -o ./publish
+    - name: Test
+      run: |
+        cd WhiteLagoon.Web
+        dotnet test --no-build --verbosity normal
+
+  migrate:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Read connection string
+        id: get-connection-string
+        run: |
+          $appSettings = Get-Content -Raw -Path "./WhiteLagoon.Web/appsettings.json" | ConvertFrom-Json
+          $connectionString = $appSettings.ConnectionStrings.DefaultConnection
+          $escapedString = $connectionString -replace '"','\"'
+          echo "connection_string=$escapedString" >> $env:GITHUB_ENV
+        shell: powershell
+    
+      - name: Install EF Tools
+        run: |
+          dotnet tool install --global dotnet-ef
+        shell: powershell
+      
+      - name: Migrate
+        run: |
+          cd WhiteLagoon.Web
+          dotnet ef database update --connection "${{ env.connection_string }}"
+        shell: powershell
+
+  deploy:
+    runs-on: self-hosted
+    needs: [build, migrate]
+    steps: 
+      - name: Stop IIS
+        run: |
+          echo "Stopping IIS Server..."
+          iisreset /stop   
+      - name: Kill processes
+        run: |
+          echo "Stopping processes that might be using the files..."
+          handle.exe C:\inetpub\wwwroot\whitelagoon.cafencode.ddns.net | ForEach-Object {
+            if ($_ -match 'pid: (\d+)') {
+              $pid = $matches[1]
+              taskkill /PID $pid /F
+            }
+          }
+      - name: Deploy
+        run: |
+          cd WhiteLagoon.Web
+          echo "Copying files to the web root..."
+          robocopy ./publish "C:\inetpub\wwwroot\whitelagoon.cafencode.ddns.net" /E /Z
+          $robocopyExitCode = $LASTEXITCODE
+          if ($robocopyExitCode -ge 8) { echo "File copy failed with exit code $robocopyExitCode"; exit $robocopyExitCode }
+          echo "Complete Copy files to the web root."
+          exit 0
+      - name: Start IIS
+        run: |
+          echo "Starting IIS Server..."
+          iisreset /start
+          exit 0
