@@ -17705,7 +17705,7 @@
         /**
          * labelsLen can be different (whether you are drawing x-axis labels or x-axis group labels)
          * hence, we introduce dataPoints to be consistent.
-         * Also, in datetime/numeric xaxis, dataPoints can be misleading, so we resort to labelsLen for such xaxis type
+         * Also, in datetime/numeric xaxis, dataPoints can be misleading, so we Villa to labelsLen for such xaxis type
          */
         var dataPoints = w.config.xaxis.type === 'category' ? w.globals.dataPoints : labelsLen;
 

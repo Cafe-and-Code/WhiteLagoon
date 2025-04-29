@@ -1,93 +1,291 @@
 ﻿@model HomeVM
 
-<div>
-    <div id="carouselExampleIndicators" class="carousel slide">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="~/images/slide2.jpg" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="~/images/slide1.jpg" class="d-block w-100" alt="...">
+<!-- Hero Section -->
+<section class="hero-section" style="background-image: url('/images/slide1.jpg'); height: 80vh; background-attachment: fixed;">
+    <div class="hero-overlay"></div>
+    <div class="container h-100 d-flex flex-column justify-content-center hero-content">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8 text-center">
+                <h1 class="display-4 fw-bold mb-4">Your Dream Villa Awaits</h1>
+                <p class="lead mb-5">Book your perfect getaway at White Lagoon. Luxurious villas, stunning views, and exceptional service.</p>
+                <a href="#search-section" class="btn btn-primary btn-lg px-5 py-3 fw-medium animate-pulse">
+                    Find Your Villa <i class="bi bi-arrow-down-circle ms-2"></i>
+                </a>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
-    <form method="post" 
-          asp-action="GetVillasByDate" >
-        <div class="row p-0 mx-0 py-4">
+    <div class="scroll-indicator">
+        <div class="mouse"></div>
+    </div>
+</section>
 
-            <div class="col-12 col-md-5  offset-md-1 pl-2  pr-2 pr-md-0">
-                <div class="form-group">
-                    <label>Check In Date</label>
-                    <input asp-for="CheckInDate" type="date" class="form-control" />
+<!-- Search Section -->
+<section id="search-section" class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="search-container">
+                    <h2 class="h3 mb-4 text-center text-primary fw-bold">Find Available Villas</h2>
+                    <form method="post" asp-action="GetVillasByDate" id="searchForm">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label fw-medium" asp-for="CheckInDate">Check In Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-calendar3"></i></span>
+                                    <input asp-for="CheckInDate" type="date" class="form-control form-control-lg" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-medium" asp-for="Nights">Number of Nights</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-moon-stars"></i></span>
+                                    <select class="form-select form-select-lg" asp-for="Nights">
+                                        @for (var i = 1; i <= 14; i++)
+                                        {
+                                            <option value="@i">@i Night@(i > 1 ? "s" : "")</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="fnLoadVillaList()" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <div class="col-8 col-md-3 pl-2 pr-2">
-                <div class="form-group">
-                    <label>No. of nights</label>
-                    <select class="form-select" asp-for="Nights">
-                        @for(var i = 1; i < 11; i++)
-                        {
-                            <option value="@i">@i</option>
-                        }
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-4 col-md-2 pt-4 pr-2">
-                <div class="form-group">
-                    <button type="button" onclick="fnLoadVillaList()" class="btn btn-success btn-block">
-                        <i class="bi bi-search"></i>  &nbsp; Check Availability
-                    </button>
-
-                </div>
-            </div>
-
         </div>
-        <partial name="_VillaList" model="Model"/>
-    </form>
-</div>
+    </div>
+</section>
+
+<!-- Trust Signals -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="d-flex flex-wrap justify-content-center">
+                    <div class="trust-badge">
+                        <i class="bi bi-check-circle-fill"></i> Best Price Guarantee
+                    </div>
+                    <div class="trust-badge">
+                        <i class="bi bi-shield-check"></i> Secure Booking
+                    </div>
+                    <div class="trust-badge">
+                        <i class="bi bi-calendar-check"></i> Free Cancellation
+                    </div>
+                    <div class="trust-badge">
+                        <i class="bi bi-star-fill"></i> 4.8/5 Customer Rating
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Villa List Section -->
+<section class="py-5">
+    <div class="container">
+        <!-- Add loading spinner -->
+        <div class="text-center spinner mb-4" style="display:none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="mt-2">Finding available villas...</div>
+        </div>
+        <div id="VillasList" class="row g-4">
+            <partial name="_VillaList" model="Model"/>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="mb-4">Experience Luxury Villa Living</h2>
+                <p class="lead mb-4">Nestled in breathtaking surroundings, White Lagoon offers the perfect blend of comfort, luxury, and natural beauty in our exclusive villas.</p>
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-geo-alt-fill text-primary fs-4 me-3"></i>
+                        <div>
+                            <h5 class="mb-0">Prime Location</h5>
+                            <p class="mb-0 text-muted">Our villas are situated in the heart of paradise, with easy access to attractions.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-house-heart-fill text-primary fs-4 me-3"></i>
+                        <div>
+                            <h5 class="mb-0">Luxury Accommodations</h5>
+                            <p class="mb-0 text-muted">Each villa is exquisitely designed for your ultimate comfort and privacy.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-award-fill text-primary fs-4 me-3"></i>
+                        <div>
+                            <h5 class="mb-0">5-Star Service</h5>
+                            <p class="mb-0 text-muted">Our dedicated staff ensures your villa stay is perfect, 24/7.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="/About" class="btn btn-outline-primary">Learn More About Our Villas</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="~/images/slide2.jpg" alt="Villa Overview" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">What Our Villa Guests Say</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="mb-4">"Our villa stay was absolutely magical! The views were incredible, and the villa itself was pure luxury. We didn't want to leave."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sarah Johnson">
+                        <div>
+                            <h6 class="mb-0">Sarah Johnson</h6>
+                            <small class="text-muted">Visited April 2024</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="mb-4">"The private pool villa was perfect for our family vacation. Spacious, clean, and the service was top-notch. Best villa experience ever!"
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen">
+                        <div>
+                            <h6 class="mb-0">Michael Chen</h6>
+                            <small class="text-muted">Visited March 2024</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card h-100">
+                    <div class="testimonial-rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-half"></i>
+                    </div>
+                    <p class="mb-4">"Booking our villa at White Lagoon was seamless. The property exceeded our expectations. A truly luxurious and relaxing getaway."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emily Rodriguez">
+                        <div>
+                            <h6 class="mb-0">Emily Rodriguez</h6>
+                            <small class="text-muted">Visited February 2024</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section scripts{
     <script>
         function fnLoadVillaList() {
+            // Validate date input
+            const checkInDate = $("#CheckInDate").val();
+            const nights = $("#Nights").val();
+            
+            if (!checkInDate) {
+                toastr.warning("Please select a check-in date");
+                return false;
+            }
+            
+            // Ensure the date is not in the past
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selectedDate = new Date(checkInDate);
+            
+            if (selectedDate < today) {
+                toastr.warning("Check-in date cannot be in the past");
+                return false;
+            }
+            
             $('.spinner').show();
             var objData = {
-                checkInDate: $("#CheckInDate").val(),
-                nights: $("#Nights").val()
+                checkInDate: checkInDate,
+                nights: nights
             };
 
-        $.ajax({
+            $.ajax({
                 type: "POST",
-                data:objData,
+                data: objData,
                 url: "@Url.Action("GetVillasByDate","Home")",
                 success: function (data) {
                     $("#VillasList").empty();
                     $("#VillasList").html(data);
-                    $('.spinner').hide(); 
+                    $('.spinner').hide();
+                    $('html, body').animate({
+                        scrollTop: $("#VillasList").offset().top - 100
+                    }, 500);
                 },
                 failure: function (response) {
                     $('.spinner').hide();
-                    alert(response.responseText);
+                    toastr.error("Error: " + response.responseText);
                 },
                 error: function (response) {
                     $('.spinner').hide();
-                    alert(response.responseText);
+                    if (response.responseText) {
+                        toastr.error("Error: " + response.responseText);
+                    } else {
+                        toastr.error("An error occurred while searching for villas. Please try again.");
+                    }
                 }
             });
         }
-        </script>
+
+        // Set default check-in date to tomorrow
+        $(document).ready(function() {
+            // Initialize toastr notification settings
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                positionClass: "toast-top-right",
+                timeOut: 5000
+            };
+            
+            // Set tomorrow as the default date
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const formattedDate = tomorrow.toISOString().split('T')[0];
+            $("#CheckInDate").val(formattedDate);
+            
+            // Enable pressing Enter key to search
+            $("#searchForm").on("keypress", function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    fnLoadVillaList();
+                }
+            });
+        });
+    </script>
 }

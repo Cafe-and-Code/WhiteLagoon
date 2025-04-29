@@ -1,6 +1,110 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-header py-4" style="background: linear-gradient(135deg, #a47764, #8c6553);">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <i class="bi bi-shield-lock-fill text-white fs-1 me-3"></i>
+                            <h1 class="text-center mb-0 fw-bold h2 text-white">@ViewData["Title"]</h1>
+                        </div>
+                        <p class="text-center text-white-50 mt-2 mb-0">How we protect your information</p>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="mb-4">
+                            <h2 class="h4 text-primary">Overview</h2>
+                            <p>
+                                At White Lagoon, we respect your privacy and are committed to protecting your personal data. 
+                                This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website and use our services.
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h2 class="h4 text-primary">Information We Collect</h2>
+                            <p>We collect information that you provide directly to us when you:</p>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item bg-light"><i class="bi bi-check-circle-fill text-primary me-2"></i>Create an account</li>
+                                <li class="list-group-item bg-light"><i class="bi bi-check-circle-fill text-primary me-2"></i>Make a reservation</li>
+                                <li class="list-group-item bg-light"><i class="bi bi-check-circle-fill text-primary me-2"></i>Contact our customer support</li>
+                                <li class="list-group-item bg-light"><i class="bi bi-check-circle-fill text-primary me-2"></i>Sign up for our newsletter</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h2 class="h4 text-primary">How We Use Your Information</h2>
+                            <p>We use the information we collect to:</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-shield-check text-primary fs-4 me-3"></i>
+                                        <div>
+                                            <h5 class="h6 mb-1">Process Transactions</h5>
+                                            <p class="small mb-0">We use your information to process and manage your bookings and payments.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-envelope-check text-primary fs-4 me-3"></i>
+                                        <div>
+                                            <h5 class="h6 mb-1">Communication</h5>
+                                            <p class="small mb-0">To respond to your inquiries and provide customer support.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-graph-up text-primary fs-4 me-3"></i>
+                                        <div>
+                                            <h5 class="h6 mb-1">Improve Our Services</h5>
+                                            <p class="small mb-0">To understand how our services are used and make improvements.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-bell text-primary fs-4 me-3"></i>
+                                        <div>
+                                            <h5 class="h6 mb-1">Marketing</h5>
+                                            <p class="small mb-0">To send you updates about special offers and promotions.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h2 class="h4 text-primary">Data Protection</h2>
+                            <p>
+                                We implement appropriate security measures to protect your personal information against 
+                                unauthorized access, alteration, disclosure, or destruction.
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h2 class="h4 text-primary">Contact Us</h2>
+                            <p>
+                                If you have any questions about this Privacy Policy, please contact us at:
+                            </p>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>Email:</strong> privacy@whitelagoon.com</p>
+                                    <p class="mb-1"><strong>Phone:</strong> (555) 123-4567</p>
+                                    <p class="mb-0"><strong>Address:</strong> 123 Villa Boulevard, Paradise Island, FL 33333</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <p class="small text-muted">Last updated: @DateTime.Now.ToString("MMMM yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

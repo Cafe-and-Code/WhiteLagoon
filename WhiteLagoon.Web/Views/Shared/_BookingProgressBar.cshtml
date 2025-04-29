@@ -1,0 +1,20 @@
+@model int
+
+<div class="booking-progress mb-4">
+    <div class="booking-step @(Model >= 1 ? "completed" : "")">
+        <div class="step-number">@(Model > 1 ? "<i class=\"bi bi-check-lg\"></i>" : "1")</div>
+        <div class="step-title">Select Villa</div>
+    </div>
+    <div class="booking-step @(Model >= 2 ? "completed" : Model == 2 ? "active" : "")">
+        <div class="step-number">@(Model > 2 ? "<i class=\"bi bi-check-lg\"></i>" : "2")</div>
+        <div class="step-title">Book Now</div>
+    </div>
+    <div class="booking-step @(Model >= 3 ? "completed" : Model == 3 ? "active" : "")">
+        <div class="step-number">@(Model > 3 ? "<i class=\"bi bi-check-lg\"></i>" : "3")</div>
+        <div class="step-title">Payment</div>
+    </div>
+    <div class="booking-step @(Model >= 4 ? "completed" : Model == 4 ? "active" : "")">
+        <div class="step-number">@(Model == 4 ? "<i class=\"bi bi-check-lg\"></i>" : "4")</div>
+        <div class="step-title">Confirmation</div>
+    </div>
+</div> 

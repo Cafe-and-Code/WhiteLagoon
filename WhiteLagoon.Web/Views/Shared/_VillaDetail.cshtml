@@ -1,39 +1,142 @@
 ﻿@model Villa
 
-<div class="row">
+<div class="row g-4">
     <div class="col-12 col-md-5">
-        <img src="@Model.ImageUrl" style="border-radius:10px;" width="100%" />
+        <div class="position-relative">
+            <img src="@Model.ImageUrl" class="img-fluid rounded shadow" alt="@Model.Name" />
+            <div class="position-absolute bottom-0 end-0 p-3">
+                <span class="badge bg-primary rounded-pill fs-5 shadow">$@Model.Price.ToString("0")/night</span>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-people-fill text-primary fs-4 me-2"></i>
+                    <div>
+                        <p class="mb-0 fw-medium">Max Occupancy</p>
+                        <p class="mb-0 text-muted">@Model.Occupancy adults</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-rulers text-primary fs-4 me-2"></i>
+                    <div>
+                        <p class="mb-0 fw-medium">Villa Size</p>
+                        <p class="mb-0 text-muted">@Model.Sqft sqft</p>
+                    </div>
+                </div>
+            </div>
+            
+            @if (Model.VillaAmenity != null && Model.VillaAmenity.Any())
+            {
+                <h5 class="fw-bold mt-4 mb-3">Villa Amenities</h5>
+                <div class="row g-2">
+                    @foreach (var amenity in Model.VillaAmenity)
+                    {
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>@amenity.Name</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
     </div>
+    
     <div class="col-12 col-md-7">
-        <div class="row p-2">
-            <div class="col-12">
-                <p class="card-title text-warning" style="font-size:xx-large">@Model.Name</p>
-                <p class="card-text" style="font-size:large">
-                    @Html.Raw(Model.Description)
-                </p>
-                @if (Model.VillaAmenity != null && Model.VillaAmenity.Count() > 0)
+        <h2 class="text-primary fw-bold mb-3">@Model.Name</h2>
+        
+        <div class="mb-4">
+            <div class="d-flex mb-2">
+                @for (int i = 0; i < 5; i++)
                 {
-                    <p class="h5 text-white">Villa Amenities</p>
-                    <ul>
-                        @foreach (var amenity in Model.VillaAmenity)
-                        {
-                            <li>@amenity.Name</li>
-                        }
-                    </ul>
+                    <i class="bi bi-star-fill text-warning me-1"></i>
+                }
+                <span class="ms-2 text-muted">(25 reviews)</span>
+            </div>
+            
+            <div class="d-flex gap-3 mb-4">
+                <span class="badge bg-success">
+                    <i class="bi bi-patch-check-fill me-1"></i> Verified
+                </span>
+                <span class="badge bg-info">
+                    <i class="bi bi-lightning-fill me-1"></i> Popular Choice
+                </span>
+                @if (Model.IsAvailable)
+                {
+                    <span class="badge bg-primary">
+                        <i class="bi bi-calendar-check me-1"></i> Available
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">
+                        <i class="bi bi-calendar-x me-1"></i> Sold Out
+                    </span>
                 }
             </div>
         </div>
-        <div class="row col-12">
-            <span class="text-end p-0 pt-3 m-0">
-                <span class="float-right">Max Occupancy : @Model.Occupancy adults </span><br />
-                <span class="float-right pt-1">Villa Size : @Model.Sqft sqft</span><br />
-                <p class="text-warning font-weight-bold pt-1">
-                    USD
-                    <span style=" #ff6a00">
-                        @Model.Price.ToString("c") / night
-                    </span>
-                </p>
-            </span>
+        
+        <div class="villa-description mb-4">
+            <h5 class="fw-bold mb-3">Description</h5>
+            <div class="card p-3 border-0 bg-light">
+                @Html.Raw(Model.Description)
+            </div>
+        </div>
+        
+        <div class="villa-highlights mb-4">
+            <h5 class="fw-bold mb-3">Villa Highlights</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-house-heart-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Premium Comfort</h6>
+                                    <p class="mb-0 small text-muted">Luxury furnishings and amenities</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Prime Location</h6>
+                                    <p class="mb-0 small text-muted">Scenic views and convenient access</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="availability-calendar mb-4">
+            <h5 class="fw-bold mb-3">Availability</h5>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-calendar3 text-primary fs-4 me-2"></i>
+                        <span class="fw-medium">Check availability for your dates</span>
+                    </div>
+                    <div class="d-flex gap-2 mb-3">
+                        <span class="badge rounded-pill bg-success-subtle text-success">
+                            <i class="bi bi-circle-fill me-1 small"></i> Available
+                        </span>
+                        <span class="badge rounded-pill bg-danger-subtle text-danger">
+                            <i class="bi bi-circle-fill me-1 small"></i> Booked
+                        </span>
+                    </div>
+                    <p class="mb-0 small text-muted">Select your dates on the booking form to check real-time availability.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

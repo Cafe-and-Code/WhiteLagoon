@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using Stripe;
 using WhiteLagoon.Application.Common.Interfaces;
 using WhiteLagoon.Application.Common.Utility;
 using WhiteLagoon.Application.Services.Interface;
+using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Web.ViewModels;
 
 namespace WhiteLagoon.Web.Controllers
@@ -10,16 +13,31 @@ namespace WhiteLagoon.Web.Controllers
     public class DashboardController : Controller
     {
         private readonly IDashboardService _dashboardService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DashboardController(IDashboardService dashboardService)
+        public DashboardController(IDashboardService dashboardService, IUnitOfWork unitOfWork)
         {
             _dashboardService = dashboardService;
+            _unitOfWork = unitOfWork;
         }
 
 
         public IActionResult Index()
         {
-            return View();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                // If user is not logged in, return an empty list
+                return View(new List<Booking>());
+            }
+
+            // Get bookings for current user
+            IEnumerable<Booking> bookingList = _unitOfWork.Booking
+                .GetAll(u => u.UserId == userId, includeProperties: "Villa");
+
+            return View(bookingList.ToList());
         }
 
 

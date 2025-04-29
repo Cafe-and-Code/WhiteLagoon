@@ -5,6 +5,6 @@ namespace WhiteLagoon.Web.ViewModels
         public decimal TotalCount { get; set; }
         public decimal CountInCurrentMonth { get; set; }
         public bool HasRatioIncreased { get; set; }
-        public int[] Series { get; set; }
+        public required int[] Series { get; set; }
     }
 }

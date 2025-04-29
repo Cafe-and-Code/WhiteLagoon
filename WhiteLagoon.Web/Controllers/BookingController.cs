@@ -355,20 +355,25 @@ public class BookingController : Controller
     public IActionResult GetAll(string status)
     {
         IEnumerable<Booking> objBookings;
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if(User.IsInRole(SD.Role_Admin))
+        if (string.IsNullOrEmpty(userId))
         {
-            objBookings = _unitOfWork.Booking.GetAll(includeProperties: "User,Villa");
+            return Unauthorized();
+        }
+
+        if (User.IsInRole(SD.Role_Admin))
+        {
+            objBookings = _unitOfWork.Booking.GetAll(includeProperties: "Villa,User");
         }
         else
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            objBookings  = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
+            objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "Villa,User");
         }
         if (!string.IsNullOrEmpty(status))
         {
-            objBookings = objBookings.Where(u => u.Status.ToLower().Equals(status.ToLower()));
+            objBookings = objBookings.Where(u => u.Status?.ToLower() == status.ToLower());
         }
         return Json(new { data = objBookings });
     }

@@ -1,14 +1,97 @@
 @model int
 
-<div class="container  pt-4">
-    <div class="col-12 text-center">
-        <h1 class="text-success text-center">Your Vacation is Confirmed!</h1>
-        Your Order Number is : @Model <br />
-        <p>You can view all order details in Manage Order Section.</p>
-        <img src="~/images/orderConfirmed.jpg" style="border-radius:20px" width="65%" />
-    </div>
-    <div class="col-12 text-center text-warning">
-        <p class="pt-1">Pack your bags! You are one step closer to an amazing vacation!</p>
-    </div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Booking Progress Bar -->
+            <partial name="_BookingProgressBar" model="4" />
 
-</div> 
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <div class="icon-circle bg-success d-inline-flex align-items-center justify-content-center rounded-circle mb-4">
+                            <i class="bi bi-check-lg text-white fs-1 p-4"></i>
+                        </div>
+                        <h1 class="text-success fw-bold mb-3">Booking Confirmed!</h1>
+                        <p class="lead mb-0">Thank you for choosing White Lagoon Villa.</p>
+                        <p class="lead">Your paradise getaway is now booked and confirmed.</p>
+                    </div>
+                    
+                    <div class="booking-details py-4 px-4 bg-light rounded mb-4 text-start">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h5 class="text-muted mb-2">Booking Reference</h5>
+                                <p class="fs-5 fw-medium mb-0">WL-@Model.ToString("D6")</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h5 class="text-muted mb-2">Status</h5>
+                                <div class="badge bg-success p-2 px-3 fs-6">Confirmed</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="mb-4">We've sent a confirmation email with all the details to your registered email address.</p>
+                    
+                    <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-calendar-check me-2"></i> Manage Your Booking
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-house me-2"></i> Return to Homepage
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="trust-signals-section my-4 text-center">
+                <partial name="_TrustSignals" />
+            </div>
+            
+            <div class="what-next mt-5">
+                <h4 class="text-center mb-4">What's Next?</h4>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle mb-3">
+                                    <i class="bi bi-download text-primary fs-4 p-3"></i>
+                                </div>
+                                <h5 class="mb-3">Download Documents</h5>
+                                <p class="mb-0 small text-muted">Save or print your booking confirmation and invoice for your records.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle mb-3">
+                                    <i class="bi bi-map text-primary fs-4 p-3"></i>
+                                </div>
+                                <h5 class="mb-3">Plan Your Stay</h5>
+                                <p class="mb-0 small text-muted">Explore activities, dining options, and amenities available at our Villa.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle mb-3">
+                                    <i class="bi bi-chat-dots text-primary fs-4 p-3"></i>
+                                </div>
+                                <h5 class="mb-3">Contact Us</h5>
+                                <p class="mb-0 small text-muted">Have questions? Our customer service team is ready to assist you.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+    }
+</style> 

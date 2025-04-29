@@ -88,8 +88,7 @@ namespace WhiteLagoon.Web.Controllers
         [HttpPost]
         public IActionResult Update(VillaNumberVM villaNumberVM)
         {
-
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && villaNumberVM.VillaNumber != null)
             {
                 _villaNumberService.UpdateVillaNumber(villaNumberVM.VillaNumber);
                 TempData["success"] = "The villa Number has been updated successfully.";
@@ -108,6 +107,12 @@ namespace WhiteLagoon.Web.Controllers
 
         public IActionResult Delete(int villaNumberId)
         {
+            var villaNumber = _villaNumberService.GetVillaNumberById(villaNumberId);
+            if (villaNumber == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
             VillaNumberVM villaNumberVM = new()
             {
                 VillaList = _villaService.GetAllVillas().Select(u => new SelectListItem
@@ -115,12 +120,8 @@ namespace WhiteLagoon.Web.Controllers
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
-                VillaNumber = _villaNumberService.GetVillaNumberById(villaNumberId)
+                VillaNumber = villaNumber
             };
-            if (villaNumberVM.VillaNumber == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
             return View(villaNumberVM);
         }
 

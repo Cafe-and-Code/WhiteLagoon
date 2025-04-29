@@ -1,185 +1,320 @@
 @model Booking
 
-<div class="p-4 mt-0 mt-lg-4">
-    <div class="row" style="border: 1px solid #aaa;">
-
-        <div class="col-12 col-lg-6 p-4 2 mt-2 mt-md-0">
-            <div class="row p-1 " style="border-radius:20px; ">
-                <div class="col-6">
-                    <h3 class="text-success">Villa Details</h3>
-                </div>
-                <div class="col-6 text-end">
-                    <a class="btn btn-secondary my-2"
-                    asp-controller="Booking" asp-action="Index"
-                    ><i class="bi bi-arrow-left-circle"></i> Back to Bookings</a>
-                </div>
-                <hr />
-                <partial name="_VillaDetail" model="@Model.Villa"/>
-                <hr />
-                <div class="text-end">
-                    <h4 class="text-danger font-weight-bold ">
-                        Booking Total :
-                        <span style="border-bottom:1px solid #ff6a00">
-                            @Model.TotalCost.ToString("c") 
-                        </span>
-                    </h4>
-                </div>
-
-                <hr/>
-
-                <form method="post">
-                    <div class="row pt-1 mb-3 " style="border-radius:20px; ">
-                        <div class="col-12 text-center">
-
-                            <button asp-controller="Booking" asp-action="GenerateInvoice"
-                                    asp-route-id="@Model.Id" asp-route-downloadType="word" 
-                                    type="submit" class="btn btn-sm btn-secondary my-1">
-                                <i class="bi bi-file-earmark-word"></i> Generate Invoice (Word)
-                            </button>
-
-                            <button asp-controller="Booking" asp-action="GenerateInvoice"
-                                    asp-route-id="@Model.Id" asp-route-downloadType="pdf" 
-                                    type="submit" class="btn btn-sm btn-secondary my-1">
-                                <i class="bi bi-file-earmark-pdf"></i> Generate Invoice (PDF)
-                            </button>
-
-                        </div>
-                    </div>
-                </form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Booking Details</h2>
+                <a class="btn btn-outline-primary" asp-controller="Booking" asp-action="Index">
+                    <i class="bi bi-arrow-left"></i> Back to Bookings
+                </a>
             </div>
-        </div>
-        <div class="col-12 col-lg-6 p-4 2 mt-4 mt-md-0" style="border-left:1px solid #aaa">
-            <form method="post">
-                <input asp-for="Id" hidden />
-                <input asp-for="VillaId" hidden />
-                <input asp-for="UserId" hidden />
-                <input asp-for="CheckInDate" hidden />
-               
-                <input asp-for="CheckOutDate" hidden />
-                <input asp-for="Nights" hidden />
-                <div class="row pt-1 mb-3 " style="border-radius:20px; ">
-                    <div class="col-6">
-                        <h3 class="text-success">Enter Booking Details</h3>
-                    </div>
-                    <div class="col-6">
-                        @if ((Model.Status == SD.StatusApproved || Model.Status == SD.StatusPending) 
-                        && User.IsInRole(SD.Role_Admin))
-                        {
-                            <button type="submit" asp-controller="Booking" asp-action="CancelBooking" class="btn btn-sm btn-outline-danger form-control my-1">
-                                <i class="bi bi-x-circle"></i> &nbsp; Cancel Booking
-                            </button>
-                        }
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Name</label>
-                        <input asp-for="Name" class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Phone</label>
-                        <input asp-for="Phone" class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Email</label>
-                        <input asp-for="Email" class="form-control" />
-                    </div>
-                    
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">No. of nights</label>
-                        <input asp-for="Nights" disabled class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Status</label>
-                        <input asp-for="Status" disabled class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Booking Date</label>
-                        <input asp-for="BookingDate" disabled class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Check-in Date</label>
-                        <input asp-for="CheckInDate" disabled class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Actual Check-in Date</label>
-                        <input asp-for="ActualCheckInDate" disabled class="form-control" />
-                    </div>
-
-
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Check-out Date</label>
-                        <input asp-for="CheckOutDate" disabled class="form-control" />
-                    </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Actual Check-out Date</label>
-                        <input asp-for="ActualCheckOutDate" disabled class="form-control" />
-                    </div>
-                     @if(Model.Status==SD.StatusApproved && User.IsInRole(SD.Role_Admin))
-                        {
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-danger" asp-for="VillaNumber"></label>
-                       
-                            <select class="form-select" asp-for="VillaNumber">
-                                @foreach (var item in Model.VillaNumbers)
-                                {
-                                    <option value="@item.Villa_Number">@item.Villa_Number</option>
-                                }
-                            </select>
+            
+            <!-- Booking Status -->
+            <div class="mb-4">
+                <div class="booking-status-timeline">
+                    <div class="booking-timeline-items">
+                        <div class="booking-timeline-item @(Model.Status != SD.StatusCancelled ? "completed" : "")">
+                            <div class="timeline-icon">
+                                <i class="bi bi-calendar-plus"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Booked</h6>
+                                <small>@Model.BookingDate.ToString("MMM dd, yyyy")</small>
+                            </div>
                         </div>
-                    }
-                    else
-                    {
-                        <input asp-for="VillaNumber" hidden />
-                        @if (Model.Status == SD.StatusCheckedIn || Model.Status == SD.StatusCompleted)
+                        
+                        <div class="booking-timeline-item @(Model.Status == SD.StatusApproved || Model.Status == SD.StatusCheckedIn || Model.Status == SD.StatusCompleted ? "completed" : "")">
+                            <div class="timeline-icon">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Confirmed</h6>
+                                <small>@(Model.Status == SD.StatusPending ? "Pending" : "Approved")</small>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-timeline-item @(Model.Status == SD.StatusCheckedIn || Model.Status == SD.StatusCompleted ? "completed" : "")">
+                            <div class="timeline-icon">
+                                <i class="bi bi-house-door"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Checked In</h6>
+                                <small>@(Model.ActualCheckInDate != default ? Model.ActualCheckInDate.ToString("MMM dd, yyyy") : "Not yet")</small>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-timeline-item @(Model.Status == SD.StatusCompleted ? "completed" : "")">
+                            <div class="timeline-icon">
+                                <i class="bi bi-flag"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Completed</h6>
+                                <small>@(Model.ActualCheckOutDate != default ? Model.ActualCheckOutDate.ToString("MMM dd, yyyy") : "Not yet")</small>
+                            </div>
+                        </div>
+                        
+                        @if (Model.Status == SD.StatusCancelled)
                         {
-                            <div class="form-group pt-2 col-6">
-                                <label class="text-warning">Villa Number</label>
-                                <input asp-for="VillaNumber" disabled class="form-control" />
+                            <div class="booking-timeline-item cancelled">
+                                <div class="timeline-icon">
+                                    <i class="bi bi-x-circle"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-0">Cancelled</h6>
+                                    <small>Booking was cancelled</small>
+                                </div>
                             </div>
                         }
-                    }
-
-                    @if (Model.IsPaymentSuccessful && User.IsInRole(SD.Role_Admin))
-                    {
-                        <div class="form-group pt-2 col-6">
-                            <label class="text-warning">Stripe PaymentIntent Id</label>
-                            <input asp-for="StripePaymentIntentId" disabled class="form-control" />
-                        </div>
-                        <div class="form-group pt-2 col-6">
-                            <label class="text-warning">Stripe Session Id</label>
-                            <input asp-for="StripeSessionId" disabled class="form-control" />
-                        </div>
-                        <div class="form-group pt-2 col-6">
-                            <label class="text-warning">Payment Date</label>
-                            <input asp-for="PaymentDate" disabled class="form-control" />
-                        </div>
-                    }
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning">Status</label>
-                        <input asp-for="Status" disabled class="form-control" />
                     </div>
                 </div>
-                <div class="form-group pt-2 pt-md-4">
-                    @if (User.IsInRole(SD.Role_Admin))
-                    {
-                        @if (Model.Status == SD.StatusApproved)
-                        {
-                            <button type="submit" asp-controller="Booking" asp-action="CheckIn"
-                                    class="btn btn-warning form-control my-1">
-                                <i class="bi bi-check2-square"></i> &nbsp; Check In
-                            </button>
-                        }
-                        @if (Model.Status == SD.StatusCheckedIn)
-                        {
-                            <button type="submit" asp-controller="Booking" asp-action="CheckOut"
-                                    class="btn btn-success form-control my-1">
-                                <i class="bi bi-clipboard2-check"></i> &nbsp; Check Out / Complete Booking
-                            </button>
-                        }
-                    }
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <!-- Villa Details Column -->
+                        <div class="col-lg-5 bg-light">
+                            <div class="p-4">
+                                <h4 class="text-primary fw-bold mb-4">Villa Details</h4>
+                                
+                                <div class="villa-preview mb-4">
+                                    <img src="@Model.Villa.ImageUrl" alt="@Model.Villa.Name" class="img-fluid rounded mb-3">
+                                    <h5 class="text-primary fw-bold">@Model.Villa.Name</h5>
+                                    <div class="d-flex gap-3 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-people text-muted me-2"></i>
+                                            <span>@Model.Villa.Occupancy</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-rulers text-muted me-2"></i>
+                                            <span>@Model.Villa.Sqft sqft</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-3">@(new string(Html.Raw(Model.Villa.Description).ToString().Take(150).ToArray()))...</p>
+                                </div>
+                                
+                                <div class="booking-summary p-3 bg-white rounded shadow-sm mb-4">
+                                    <h6 class="fw-bold mb-3">Booking Summary</h6>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Check-in</span>
+                                        <span class="fw-medium">@Model.CheckInDate.ToString("MMM dd, yyyy")</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Check-out</span>
+                                        <span class="fw-medium">@Model.CheckOutDate.ToString("MMM dd, yyyy")</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Stay Duration</span>
+                                        <span class="fw-medium">@Model.Nights night@(Model.Nights > 1 ? "s" : "")</span>
+                                    </div>
+                                    @if (Model.VillaNumber > 0)
+                                    {
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Villa Number</span>
+                                            <span class="fw-medium">@Model.VillaNumber</span>
+                                        </div>
+                                    }
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold">Total</span>
+                                        <span class="fw-bold text-primary">@Model.TotalCost.ToString("c")</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <form method="post">
+                                        <div class="d-flex gap-2">
+                                            <button asp-controller="Booking" asp-action="GenerateInvoice"
+                                                    asp-route-id="@Model.Id" asp-route-downloadType="pdf" 
+                                                    type="submit" class="btn btn-primary flex-grow-1">
+                                                <i class="bi bi-file-earmark-pdf"></i> PDF Invoice
+                                            </button>
+                                            <button asp-controller="Booking" asp-action="GenerateInvoice"
+                                                    asp-route-id="@Model.Id" asp-route-downloadType="word" 
+                                                    type="submit" class="btn btn-outline-primary flex-grow-1">
+                                                <i class="bi bi-file-earmark-word"></i> Word Invoice
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Booking Details Column -->
+                        <div class="col-lg-7">
+                            <div class="p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4 class="text-primary fw-bold mb-0">Booking Information</h4>
+                                    <div>
+                                        @if ((Model.Status == SD.StatusApproved || Model.Status == SD.StatusPending) && User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <form method="post" class="d-inline">
+                                                <input asp-for="Id" hidden />
+                                                <button type="submit" asp-controller="Booking" asp-action="CancelBooking" 
+                                                        class="btn btn-danger">
+                                                    <i class="bi bi-x-circle"></i> Cancel Booking
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <form method="post">
+                                    <input asp-for="Id" hidden />
+                                    <input asp-for="VillaId" hidden />
+                                    <input asp-for="UserId" hidden />
+                                    <input asp-for="CheckInDate" hidden />
+                                    <input asp-for="CheckOutDate" hidden />
+                                    <input asp-for="Nights" hidden />
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Name</label>
+                                            <input asp-for="Name" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Phone</label>
+                                            <input asp-for="Phone" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email</label>
+                                            <input asp-for="Email" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Status</label>
+                                            <input value="@Model.Status" class="form-control @GetStatusClass(Model.Status)" readonly />
+                                        </div>
+                                        
+                                        @if(Model.Status == SD.StatusApproved && User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <div class="col-md-6">
+                                                <label class="form-label">Assign Villa Number</label>
+                                                <select class="form-select" asp-for="VillaNumber">
+                                                    @foreach (var item in Model.VillaNumbers)
+                                                    {
+                                                        <option value="@item.Villa_Number">@item.Villa_Number</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        }
+                                        
+                                        @if (Model.IsPaymentSuccessful && User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <div class="col-md-6">
+                                                <label class="form-label">Payment Date</label>
+                                                <input asp-for="PaymentDate" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Stripe Payment ID</label>
+                                                <input asp-for="StripePaymentIntentId" class="form-control" readonly />
+                                            </div>
+                                        }
+                                    </div>
+                                    
+                                    @if (User.IsInRole(SD.Role_Admin))
+                                    {
+                                        <div class="d-grid gap-2 mt-4">
+                                            @if (Model.Status == SD.StatusApproved)
+                                            {
+                                                <button type="submit" asp-controller="Booking" asp-action="CheckIn"
+                                                        class="btn btn-success">
+                                                    <i class="bi bi-box-arrow-in-right"></i> Check In Guest
+                                                </button>
+                                            }
+                                            @if (Model.Status == SD.StatusCheckedIn)
+                                            {
+                                                <button type="submit" asp-controller="Booking" asp-action="CheckOut"
+                                                        class="btn btn-primary">
+                                                    <i class="bi bi-box-arrow-right"></i> Check Out Guest
+                                                </button>
+                                            }
+                                        </div>
+                                    }
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .booking-status-timeline {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .booking-timeline-items {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+    }
+    
+    .booking-timeline-items::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 40px;
+        right: 40px;
+        height: 2px;
+        background-color: #dee2e6;
+        z-index: 1;
+    }
+    
+    .booking-timeline-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+        flex: 1;
+        text-align: center;
+        position: relative;
+    }
+    
+    .timeline-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        border: 2px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #6c757d;
+    }
+    
+    .booking-timeline-item.completed .timeline-icon {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: white;
+    }
+    
+    .booking-timeline-item.cancelled .timeline-icon {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+</style>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            SD.StatusPending => "bg-warning bg-opacity-10 text-warning",
+            SD.StatusApproved => "bg-success bg-opacity-10 text-success",
+            SD.StatusCheckedIn => "bg-primary bg-opacity-10 text-primary",
+            SD.StatusCompleted => "bg-info bg-opacity-10 text-info",
+            SD.StatusCancelled => "bg-danger bg-opacity-10 text-danger",
+            SD.StatusRefunded => "bg-secondary bg-opacity-10 text-secondary",
+            _ => ""
+        };
+    }
+}

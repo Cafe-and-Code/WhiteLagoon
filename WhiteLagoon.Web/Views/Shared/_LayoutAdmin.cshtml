@@ -1,83 +1,90 @@
 ﻿<!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WhiteLagoon.Web</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css" integrity="sha512-Z/def5z5u2aR89OuzYcxmDJ0Bnd5V1cKqBEbvLOiUNWdg9PQeXVvXLI90SE4QOHGlfLqUnDNVAYyZi8UwUTmWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>@ViewData["Title"] - WhiteLagoon Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/WhiteLagoon.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="~/css/spinner.css"/>
-    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/spinner.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css" />
     <link rel="stylesheet" href="~/css/apexcharts.css" />
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
-            <div class="container-fluid d-flex justify-content-between">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/logo.jpg" style="width:35px"/></a>
+    <header class="sticky-top shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light py-3">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo.jpg" alt="White Lagoon Logo" class="me-2" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <span class="fw-bold">White Lagoon Admin</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu"
                         aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>   
+                    <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="ms-auto">
+                     <partial name="_LoginPartialAdmin" />
+                </div>
             </div>
-            <partial name="_LoginPartialAdmin" />
         </nav>
     </header>
     <div class="container-fluid">
         <div class="loading spinner" style="display:none;"></div>
         <div class="row">
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-                <div class="position-static pt-3">
-                    <ul class="navbar-nav">
-                        <li>
-                            <div class="text-muted small fw-bold text-uppercase px-3">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item px-3">
+                            <div class="text-muted small fw-bold text-uppercase">
                                 Menu
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
-                                <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                                <span>Dashboard</span>
+                            <a class="nav-link text-primary @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
                             </a>
                         </li>
-                        <li>
-                            <div class="text-muted small fw-bold text-uppercase px-3 mt-2">
+                        <li class="nav-item px-3 mt-3">
+                            <div class="text-muted small fw-bold text-uppercase">
                                 Content Management
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Villa" asp-action="Index">
-                                <span class="me-2"><i class="bi bi-house-door"></i></span>
-                                <span>Villa</span>
+                            <a class="nav-link text-primary @(ViewContext.RouteData.Values["controller"]?.ToString() == "Villa" ? "active" : "")" asp-controller="Villa" asp-action="Index">
+                                <i class="bi bi-house-door me-2"></i>
+                                Villa
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="VillaNumber" asp-action="Index">
-                                <span class="me-2"><i class="bi bi-list-ol"></i></i></span>
-                                <span>VillaNumber</span>
+                            <a class="nav-link text-primary @(ViewContext.RouteData.Values["controller"]?.ToString() == "VillaNumber" ? "active" : "")" asp-controller="VillaNumber" asp-action="Index">
+                                <i class="bi bi-list-ol me-2"></i>
+                                Villa Number
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Amenity" asp-action="Index">
-                                <span class="me-2"><i class="bi bi-building"></i></span>
-                                <span>Amenity</span>
+                            <a class="nav-link text-primary @(ViewContext.RouteData.Values["controller"]?.ToString() == "Amenity" ? "active" : "")" asp-controller="Amenity" asp-action="Index">
+                                <i class="bi bi-building me-2"></i>
+                                Amenity
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Booking" asp-action="Index" asp-route-status="@SD.StatusApproved">
-                                <span class="me-2"><i class="bi bi-journal-plus"></i></span>
-                                <span>Booking</span>
+                            <a class="nav-link text-primary @(ViewContext.RouteData.Values["controller"]?.ToString() == "Booking" ? "active" : "")" asp-controller="Booking" asp-action="Index" asp-route-status="@SD.StatusApproved">
+                                <i class="bi bi-journal-plus me-2"></i>
+                                Booking
                             </a>
                         </li>
                     </ul>
                 </div>
             </nav>
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 w-100">
+                <div class="pt-3 pb-2 mb-3">
                     <partial name="_Notification" />
                     @RenderBody()
                 </div>
@@ -85,19 +92,18 @@
         </div>
     </div>
 
-    <footer class="border-top footer bg-dark text-muted">
+    <footer class="bg-dark text-white py-4 mt-auto">
         <div class="container text-center">
-            Made with <i class="bi bi-heart-fill"></i> by DotNetMastery
+             <p class="mb-0">© @DateTime.Now.Year White Lagoon Admin. Made with <i class="bi bi-heart-fill text-danger"></i> by NguyenDotNet</p>
         </div>
     </footer>
-    @* jquery-ajax-unobtrusive@3.2.6 *@
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.bundle.min.js" integrity="sha512-sH8JPhKJUeA9PWk3eOcOl8U+lfZTgtBXD41q6cO/slwxGHCxKcW45K4oPCUhHG7NMB4mbKEddVmPuTXtpbCbFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otIFDrCd0J3SdHywQS5RzAx9DSrCYyVu0oRzjpHCYPdJUoAO3QKwLdSZpNXxNBq4J2giQIGcKMsXNbsxRg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" asp-append-version="true"></script>
-   @*  <script src="~/js/jquery.unobtrusive-ajax.min.js"></script> *@
-    <script src="~/js/apexcharts.js"></script>
+    <script src="~/js/apexcharts.js" ></script>
+    <script src="//cdn.datatables.net/2.2.2/js/dataTables.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

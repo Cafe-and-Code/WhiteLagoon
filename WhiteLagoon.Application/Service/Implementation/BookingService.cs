@@ -26,24 +26,27 @@ namespace WhiteLagoon.Application.Services.Implementation
 
         public IEnumerable<Booking> GetAllBookings(string userId = "", string? statusFilterList = "")
         {
-            IEnumerable<string> statusList = statusFilterList.ToLower().Split(",");
-            if(!string.IsNullOrEmpty(statusFilterList) && !string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(statusFilterList))
             {
-                return _unitOfWork.Booking.GetAll(u => statusList.Contains(u.Status.ToLower()) &&
-                u.UserId == userId, includeProperties: "User,Villa");
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(statusFilterList))
-                {
-                    return _unitOfWork.Booking.GetAll(u => statusList.Contains(u.Status.ToLower()), includeProperties: "User,Villa");
-                }
                 if (!string.IsNullOrEmpty(userId))
                 {
                     return _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
                 }
+                return _unitOfWork.Booking.GetAll(includeProperties: "User, Villa");
             }
-            return _unitOfWork.Booking.GetAll(includeProperties: "User, Villa");
+
+            var statusList = statusFilterList.ToLower().Split(",");
+            
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return _unitOfWork.Booking.GetAll(u => u.Status != null && 
+                    statusList.Contains(u.Status.ToLower()) &&
+                    u.UserId == userId, includeProperties: "User,Villa");
+            }
+            
+            return _unitOfWork.Booking.GetAll(u => u.Status != null && 
+                statusList.Contains(u.Status.ToLower()), 
+                includeProperties: "User,Villa");
         }
 
         public Booking? GetBookingById(int bookingId)
